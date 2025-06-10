@@ -1,5 +1,5 @@
 # AZOrphanedIdentities
-Powershell script to retrieve orphaned managed identities in Azure using the [Azure Powershell module](https://learn.microsoft.com/en-us/powershell/azure/install-azure-powershell?view=azps-14.1.0).
+Powershell script to retrieve orphaned managed identities in Azure using the [Azure Powershell module](https://learn.microsoft.com/en-us/powershell/azure/install-azure-powershell?view=azps-14.1.0).<br/>
 Tenant owners/admins are unable to delete orphaned identities and will need to reach out to Microsoft for deletion.
 
 This script will grab all system-assigned managed identities and check if they exist using their Azure resource ID. Output will be in a CSV file containing the:
