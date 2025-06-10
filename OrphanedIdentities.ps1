@@ -8,7 +8,7 @@ $orphanedIdentities = New-Object -TypeName System.Collections.ArrayList # Empty 
 foreach($identity in $allManagedIdentities) {
     $index = [Array]::FindIndex($identity.AlternativeName, [Predicate[string]]{ param($item) $item -like "*/subscriptions/*" }) # Some identities have the resource ID in a different position. Grabbing the position here
     $ResourceID = $identity.AlternativeName[$index] # Grabbing Azure Resource ID field
-    if (!($ResourceID -match "blueprintAssignments|policyAssignments|dataScanners|securityOperators")) { # These resources cannot be found with Get-AzResource
+    if (!($ResourceID -match "blueprintAssignments|policyAssignments|dataScanners|securityOperators")) { # These resources in the match parameter cannot be found with Get-AzResource
         try {
             $resource = Get-AzResource -ResourceId "$($ResourceID)" -ErrorAction Stop # Check if resource exists. Error typically = orphaned
             if ($resource) {
