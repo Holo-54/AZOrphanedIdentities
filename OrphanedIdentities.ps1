@@ -4,22 +4,15 @@ param(
     [string]$OutputDirectory = $PWD.Path,
 
     [Parameter(Mandatory=$false)]
-    [switch]$SkipModuleCheck,
-
-    [Parameter(Mandatory=$false)]
     [switch]$DryRun
 )
 
-# Pre-check for required Azure PowerShell (Az) module
-if (-not $SkipModuleCheck) {
-    $requiredModules = @('Az')
-    $missing = $requiredModules | Where-Object { -not (Get-Module -ListAvailable -Name $_) }
-    if ($missing) {
-        Write-Error "Required module(s) not found: $($missing -join ', '). Install with: Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
-        exit 1
-    }
-} else {
-    Write-Output "Skipping module presence check (SkipModuleCheck provided)."
+# Pre-check for required Azure PowerShell (Az) module - fail early if missing
+$requiredModules = @('Az')
+$missing = $requiredModules | Where-Object { -not (Get-Module -ListAvailable -Name $_) }
+if ($missing) {
+    Write-Error "Required module(s) not found: $($missing -join ', '). Install with: Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
+    exit 1
 }
 
 # Prepare output file path and handle dry-run
