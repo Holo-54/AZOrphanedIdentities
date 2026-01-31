@@ -1,9 +1,6 @@
 # Define output directory for CSV (defaults to current folder)
 param(
-    [Parameter(Mandatory=$false)]
     [string]$OutputDirectory = $PWD.Path,
-
-    [Parameter(Mandatory=$false)]
     [switch]$DryRun
 )
 
