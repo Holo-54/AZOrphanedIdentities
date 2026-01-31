@@ -35,5 +35,5 @@ This script will grab all system-assigned managed identities and check if they e
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `-OutputDirectory` | String | No | Current directory | Directory where output files will be written |
-| `-DryRun` | Switch | No | False | Runs the script without querying Azure resources. Used to verify write access to the output directory. |
+| `OutputDirectory` | String | No | Current directory | Directory where output files will be written |
+| `DryRun` | Switch | No | False | Runs the script without querying Azure resources. Used to verify write access to the output directory. |
