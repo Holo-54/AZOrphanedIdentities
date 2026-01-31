@@ -9,15 +9,31 @@ This script will grab all system-assigned managed identities and check if they e
 - Azure Resource ID
 - Status (Exists)
 
+## Prerequisites
+- Azure PowerShell module (`Az`)
+- Permission to read managed identities in the tenant
+
 ## Running the script
-1) Change the output path and file name variables to your desired output directory/file name
-    - Output Directory: ```$outputFilePath```
-      - **Line 2**
-          - Format as directory path
-              - Ex: ```C:\Temp```
-    - Output File Name: ```$outputFileName```
-      - **Line 3**
-          - Ex: ```OrphanedIdentities```
-      - Leave off the extension name! The ```.csv``` is already applied in the export on **line 32**
-2) Connect to your Azure tenant: ```Connect-AzAccount```
-3) Run the script
+> **Note:** Use `-DryRun` to validate output directory permissions
+1) Connect to your Azure tenant: ```Connect-AzAccount```
+2) Run the script
+
+**Standard execution**
+```
+.\OrphanedIdentities.ps1
+```
+**Specify an output directory**
+```
+.\OrphanedIdentities.ps1 -OutputDirectory C:\Reports
+```
+**Dry run (validate output directory permissions)**
+```
+.\OrphanedIdentities.ps1 -OutputDirectory C:\Reports -DryRun
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `-OutputDirectory` | String | No | Current directory | Directory where output files will be written |
+| `-DryRun` | Switch | No | False | Runs the script without querying Azure resources. Used to verify write access to the output directory. |
