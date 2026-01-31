@@ -1,6 +1,39 @@
-# Define output file name/path of CSV below
-$outputFilePath = "CHANGE\ME" # Path to output folder - Ex: "C:\Temp"
-$outputFileName = "CHANGE_ME" # Output file name - Ex: "OrphanedIdentities"
+# Define output directory for CSV (defaults to current folder)
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$OutputDirectory = $PWD.Path,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$SkipModuleCheck,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$DryRun
+)
+
+# Pre-check for required Azure PowerShell (Az) module
+if (-not $SkipModuleCheck) {
+    $requiredModules = @('Az')
+    $missing = $requiredModules | Where-Object { -not (Get-Module -ListAvailable -Name $_) }
+    if ($missing) {
+        Write-Error "Required module(s) not found: $($missing -join ', '). Install with: Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force"
+        exit 1
+    }
+} else {
+    Write-Output "Skipping module presence check (SkipModuleCheck provided)."
+}
+
+# Prepare output file path and handle dry-run
+$timestamp = Get-Date -Format 'MMddyyyy_HH-mm'
+$fileName = "OrphanedIdentities_$($timestamp).csv"
+$fullPath = Join-Path -Path $OutputDirectory -ChildPath $fileName
+if (-not (Test-Path -Path $OutputDirectory)) {
+    New-Item -Path $OutputDirectory -ItemType Directory -Force | Out-Null
+}
+if ($DryRun) {
+    Write-Output "Dry run: creating empty CSV at $fullPath"
+    @() | Export-Csv -Path $fullPath -NoTypeInformation
+    exit 0
+}
 
 # Grab all sytem-assigned managed identities
 $allManagedIdentities = Get-AzADServicePrincipal -Filter "servicePrincipalType eq 'ManagedIdentity' and alternativeNames/any(x:x eq 'isExplicit=False')" # Looking for system assigned (isExplicit=False) managed identities
@@ -29,4 +62,4 @@ foreach($identity in $allManagedIdentities) {
     }
     $orphanedIdentities.Add($currentIdentity) | Out-Null
 }
-$orphanedIdentities | Export-Csv -Path "$($outputFilePath)\$($outputFileName).csv" -NoTypeInformation
+$orphanedIdentities | Export-Csv -Path $fullPath -NoTypeInformation
